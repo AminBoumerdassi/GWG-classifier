@@ -38,12 +38,11 @@ glitch_labels= array([])
 for i in glitch_files:
     glitch_labels= append(glitch_labels,[label for label in classes if label in i])
     
-#Reshape array to fit into the CNN
-#dimensions= [1,len(glitch_data[1])]
-glitch_data.reshape(10,1,16384,1)
-
 #Encoding labels
 label_encoder= LabelEncoder()
 classes_encoded= label_encoder.fit_transform(glitch_labels)
 ylabel= to_categorical(classes_encoded)
 
+#Reshape array to fit into the CNN
+#dimensions= [1,len(glitch_data[1])]
+glitch_data.reshape(10,1,16384,1)
