@@ -5,13 +5,15 @@ Created on Mon Feb 21 14:58:08 2022
 @author: Amin Boumerdassi
 
 This script contains the CNN and trains it on glitch data and
-pre-encoded labels. To run this, first run
-create_glitch_array.py and create_glitch_labels.py.
+pre-encoded labels. It then saves the trained model along with
+the test data for use in create_confusion_matrix.py. 
+
+First run create_glitch_array.py and create_glitch_labels.py.
 """
 #Import relevant modules
 from tensorflow import keras
 from tensorflow.keras.layers import Conv1D, MaxPooling1D, Dropout, Flatten, Dense
-from numpy import shape, load
+from numpy import shape, load, save
 from sklearn.model_selection import train_test_split
 
 #Load O1+2 glitch data from .npy
@@ -45,8 +47,13 @@ model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adadel
     learning_rate=1.0, rho=0.95, epsilon=1e-07, name="Adadelta"), metrics=['accuracy'])
 
 #Fitting the CNN
-history = model.fit(X_train, y_train, epochs=20, batch_size=25, verbose=1, validation_data=(X_test, y_test))
+history = model.fit(X_train, y_train, epochs=7, batch_size=25, verbose=1, validation_data=(X_test, y_test))
 
 #Evaluate CNN performance
 _, accuracy = model.evaluate(X_test, y_test, batch_size=64, verbose=1)
 print("Validation accuracy: {}".format(accuracy))
+
+#Save test data & model for use in confusion matrix generation
+save("glitch_data_{:}_pts_X_TEST.npy".format(dimensions[1]), X_test)
+save("glitch_data_{:}_pts_y_TEST.npy".format(dimensions[1]), y_test)
+model.save("glitch_classifier_model1")
