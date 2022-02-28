@@ -26,11 +26,14 @@ glitch_labels= array([])
 
 for i in glitch_files:
     glitch_labels= append(glitch_labels,[label for label in classes if label in i])
+
+#Encode class list
+label_encoder= LabelEncoder()
+class_lst_encoded= label_encoder.fit_transform(classes)
      
 #Encoding labels
 num=14#No. of unique classes as *loaded*. May be less than len(classes)
-label_encoder= LabelEncoder()
 classes_encoded= label_encoder.fit_transform(glitch_labels)
 ylabel= to_categorical(classes_encoded, num_classes=num)  
-
 save("glitch_labels_encoded.npy", ylabel)
+save("classes_encoded.npy", class_lst_encoded)
